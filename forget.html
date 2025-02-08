@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forgot Password</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-image: url("https://m.media-amazon.com/images/I/B1pppR4gVKL._CLa%7C2140%2C2000%7C81UY6dijfOL.png%7C0%2C0%2C2140%2C2000%2B0.0%2C0.0%2C2140.0%2C2000.0_AC_UY1000_.png");
+            background-attachment: fixed;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .forgot-password-card {
+            max-width: 400px;
+            padding: 25px;
+            border-radius: 12px;
+            background: #ffffff;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease-in-out;
+        }
+        .forgot-password-card:hover {
+            transform: translateY(-5px);
+        }
+        .btn-primary {
+            background-color: #4a90e2;
+            border: none;
+            transition: background 0.3s ease-in-out;
+        }
+        .btn-primary:hover {
+            background-color: #357ab7;
+        }
+        .text-muted {
+            font-size: 14px;
+        }
+        .alert {
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="forgot-password-card">
+        <h3 class="text-center mb-3" id="reset">Forgot Password</h3>
+        <p class="text-muted">Enter your email to reset your password</p>
+        <form id="forgotPasswordForm">
+            <div class="mb-3">
+                <label for="email" class="form-label">Email Address</label>
+                <input type="email" class="form-control" id="email" placeholder="Enter your email" required>
+            </div>
+            <button type="submit" class="btn btn-primary w-100" id="btn">Reset Password</button>
+        </form>
+        <div id="message" class="alert alert-success mt-3" style="display: none;"></div>
+        <div id="error" class="alert alert-danger mt-3" style="display: none;"></div>
+        <div class="text-center mt-3">
+            <a href="login.html" class="text-decoration-none">Back to Login</a>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-app.js";
+        import { getAuth, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyC5zczKp-eYIwveyX7eb8YnC28UYRn97Gw",
+            authDomain: "js-project-f2438.firebaseapp.com",
+            projectId: "js-project-f2438",
+            storageBucket: "js-project-f2438.appspot.com",
+            messagingSenderId: "726104076537",
+            appId: "1:726104076537:web:cc2f19f25d76f4fd0f3228",
+            measurementId: "G-CJZQ2S0NK4",
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        // Forgot Password Form Submission
+        document.getElementById('forgotPasswordForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+
+            sendPasswordResetEmail(auth, email)
+                .then(() => {
+                    // Show success message
+                    document.getElementById('message').innerText = "Password reset email sent! Check your inbox.";
+                    document.getElementById('message').style.display = 'block';
+                    document.getElementById('error').style.display = 'none';
+                })
+                .catch((error) => {
+                    // Show error message
+                    document.getElementById('error').innerText = error.message;
+                    document.getElementById('error').style.display = 'block';
+                    document.getElementById('message').style.display = 'none';
+                });
+        });
+    </script>
+</body>
+</html>
