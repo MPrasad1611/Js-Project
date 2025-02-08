@@ -3,16 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign Up Page</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>TrendTrove Sign Up</title>
     <style>
+        /* General Styles */
         body, html {
             margin: 0;
             padding: 0;
             height: 100%;
-            font-family: Arial, sans-serif;
+            font-family: 'Arial', sans-serif;
         }
 
+        /* Background Image Container (No Flicker) */
         .background-container {
             position: fixed;
             top: 0;
@@ -36,22 +37,31 @@
             opacity: 0;
         }
 
-      
+        /* Signup Form */
         .signup-container {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
             background: rgba(255, 255, 255, 0.85);
-            padding: 20px;
-            border-radius: 10px;
+            padding: 30px;
+            border-radius: 15px;
             text-align: center;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            width: 320px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+            width: 360px;
+            backdrop-filter: blur(10px);
         }
 
         .signup-container h1 {
+            margin-bottom: 10px;
+            font-size: 28px;
+            color: #007bff;
+        }
+
+        .signup-container h2 {
             margin-bottom: 20px;
+            font-size: 22px;
+            color: #444;
         }
 
         .input-container {
@@ -88,6 +98,7 @@
             color: white;
             cursor: pointer;
             font-size: 16px;
+            transition: background-color 0.3s;
         }
 
         .signup-container button:hover {
@@ -106,8 +117,8 @@
         /* Responsive Design */
         @media (max-width: 600px) {
             .signup-container {
-                width: 80%;
-                padding: 15px;
+                width: 90%;
+                padding: 20px;
             }
 
             .signup-container input,
@@ -124,7 +135,8 @@
     </div>
 
     <div class="signup-container">
-        <h1>Create An Account</h1>
+        <h1>TrendTrove</h1>
+        <h2>Create Your Account</h2>
         <form id="signup-form">
             <input type="text" id="username" placeholder="Username" required>
             <input type="email" id="email" placeholder="Email" required>
