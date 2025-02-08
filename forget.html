@@ -76,24 +76,23 @@
             measurementId: "G-CJZQ2S0NK4",
         };
 
-        // Initialize Firebase
+       
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
 
-        // Forgot Password Form Submission
+        
         document.getElementById('forgotPasswordForm').addEventListener('submit', (e) => {
             e.preventDefault();
             const email = document.getElementById('email').value;
 
             sendPasswordResetEmail(auth, email)
                 .then(() => {
-                    // Show success message
+                    
                     document.getElementById('message').innerText = "Password reset email sent! Check your inbox.";
                     document.getElementById('message').style.display = 'block';
                     document.getElementById('error').style.display = 'none';
                 })
                 .catch((error) => {
-                    // Show error message
                     document.getElementById('error').innerText = error.message;
                     document.getElementById('error').style.display = 'block';
                     document.getElementById('message').style.display = 'none';

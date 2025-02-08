@@ -6,7 +6,6 @@
     <title>TrendTrove Sign Up</title>
 
     <style>
-      /* General Styles */
       body,
       html {
         margin: 0;
@@ -15,8 +14,6 @@
         font-family: "Arial", sans-serif;
         overflow: hidden;
       }
-
-      /* Background Slideshow */
       .background-container {
         position: fixed;
         top: 0;
@@ -39,7 +36,7 @@
         opacity: 1;
       }
 
-      /* Signup Form */
+    
       .signup-container {
         position: absolute;
         top: 50%;
@@ -112,7 +109,7 @@
     </style>
   </head>
   <body>
-    <!-- Background Slideshow Container -->
+ 
     <div class="background-container">
       <img src="./images/img1.jpg" class="active" />
       <img src="./images/img2.jpg" />
@@ -135,7 +132,7 @@
     </div>
 
     <script type="module">
-       // Import Firebase modules
+       
        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
       import {
         getAuth,
@@ -143,7 +140,7 @@
         signInAnonymously,
       } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-      // Firebase Configuration (Replace with your Firebase config)
+      
       const firebaseConfig = {
         apiKey: "AIzaSyC5zczKp-eYIwveyX7eb8YnC28UYRn97Gw",
         authDomain: "js-project-f2438.firebaseapp.com",
@@ -154,11 +151,11 @@
         measurementId: "G-CJZQ2S0NK4",
       };
 
-      // Initialize Firebase
+      
       const app = initializeApp(firebaseConfig);
       const auth = getAuth(app);
 
-      // Handle Sign Up
+      
       document
         .getElementById("signup-form")
         .addEventListener("submit", function (event) {
@@ -175,14 +172,14 @@
           createUserWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
               alert("Signup successful! Redirecting...");
-              window.location.href = "./login.html"; // Redirect to user dashboard
+              window.location.href = "./login.html"; 
             })
             .catch((error) => {
-              alert(error.message); // Display Firebase error message
+              alert(error.message); 
             });
         });
 
-      // Guest Login Function
+      
       function loginAsGuest() {
         auth
           .signInAnonymously()
@@ -195,7 +192,7 @@
           });
       }
 
-      // Background Slideshow Logic
+      
       const images = document.querySelectorAll(".background-container img");
       let currentIndex = 0;
 
