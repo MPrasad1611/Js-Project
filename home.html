@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TrendTrove - Trends Dashboard</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f9;
+        margin: 0;
+        padding: 0;
+      }
+
+      .dashboard {
+        width: 100%;
+        min-height: 100vh;
+        padding: 20px;
+        background-color: #fff;
+      }
+
+      header {
+        text-align: center;
+        margin-bottom: 20px;
+      }
+
+      header h1 {
+        margin: 0;
+        font-size: 2.5em;
+        color: #007bff;
+      }
+
+      nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 10px;
+        padding: 10px;
+        background-color: #007bff;
+        border-radius: 5px;
+      }
+
+      nav .logo {
+        font-size: 1.5em;
+        font-weight: bold;
+        color: #fff;
+      }
+
+      nav .search-bar {
+        flex-grow: 1;
+        margin: 0 20px;
+      }
+
+      nav .search-bar input {
+        width: 100%;
+        padding: 10px;
+        border: none;
+        border-radius: 5px;
+      }
+
+      nav button {
+        padding: 10px 20px;
+        border: none;
+        background-color: #28a745;
+        color: #fff;
+        cursor: pointer;
+        border-radius: 5px;
+        transition: background-color 0.3s ease;
+      }
+
+      nav button:hover {
+        background-color: #218838;
+      }
+
+      nav .logout-button {
+        background-color: #dc3545;
+      }
+
+      nav .logout-button:hover {
+        background-color: #c82333;
+      }
+
+      section {
+        display: none;
+        transition: opacity 0.5s ease;
+      }
+
+      section.active {
+        display: block;
+        opacity: 1;
+      }
+
+      #trends-list {
+        margin-top: 20px;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+      }
+
+      .trend {
+        background-color: #f9f9f9;
+        padding: 15px;
+        border-radius: 10px;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+      }
+
+      .trend:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      }
+
+      .trend img {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+        border-radius: 10px;
+      }
+
+      .trend h3 {
+        margin: 10px 0;
+        font-size: 1.5em;
+        color: #333;
+      }
+
+      .trend p {
+        margin: 0 0 10px;
+        color: #666;
+      }
+
+      .trend .actions {
+        display: flex;
+        gap: 10px;
+      }
+
+      .trend .actions button {
+        padding: 5px 10px;
+        border: none;
+        background-color: #007bff;
+        color: #fff;
+        cursor: pointer;
+        border-radius: 3px;
+        transition: background-color 0.3s ease;
+      }
+
+      .trend .actions button:hover {
+        background-color: #0056b3;
+      }
+
+      form {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      form input,
+      form textarea {
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+      }
+
+      form button {
+        padding: 10px;
+        background-color: #28a745;
+        color: #fff;
+        border: none;
+        cursor: pointer;
+        border-radius: 5px;
+        transition: background-color 0.3s ease;
+      }
+
+      form button:hover {
+        background-color: #218838;
+      }
+
+      .hidden {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="dashboard">
+      <header>
+        <h1>TrendTrove</h1>
+        <nav>
+          <div class="logo">TrendTrove</div>
+          <div class="search-bar">
+            <input
+              type="text"
+              id="search-input"
+              placeholder="Search trends..."
+            />
+          </div>
+          <button id="submit-trend">Submit Trend</button>
+          <button id="logout-button" class="logout-button">Logout</button>
+        </nav>
+      </header>
+
+      <main>
+        <section id="trends-section" class="active">
+          <h2>Trending Now</h2>
+          <div id="trends-list"></div>
+        </section>
+        <section id="submit-trend-section" class="hidden">
+          <h2>Submit a Trend</h2>
+          <form id="trend-form">
+            <input
+              type="text"
+              id="trend-title"
+              placeholder="Trend Title"
+              required
+            />
+            <textarea
+              id="trend-description"
+              placeholder="Trend Description"
+              required
+            ></textarea>
+            <input
+              type="text"
+              id="trend-image"
+              placeholder="Image URL (optional)"
+            />
+            <button type="submit">Submit</button>
+          </form>
+        </section>
+      </main>
+    </div>
+
+    <script>
+      const TRENDS_API_URL =
+        "https://679f552e24322f8329c360ab.mockapi.io/trends";
+
+      const trendsSection = document.getElementById("trends-section");
+      const submitTrendSection = document.getElementById(
+        "submit-trend-section"
+      );
+      const trendsList = document.getElementById("trends-list");
+      const trendForm = document.getElementById("trend-form");
+      const submitTrendButton = document.getElementById("submit-trend");
+      const logoutButton = document.getElementById("logout-button");
+      const searchInput = document.getElementById("search-input");
+
+      async function fetchTrends() {
+        try {
+          const response = await fetch(TRENDS_API_URL);
+          if (!response.ok) {
+            throw new Error("Failed to fetch trends");
+          }
+          const data = await response.json();
+          return data;
+        } catch (error) {
+          console.error("Error fetching trends:", error);
+          return [];
+        }
+      }
+
+      async function renderTrends(filteredTrends) {
+        const trends = filteredTrends || (await fetchTrends());
+        trendsList.innerHTML = "";
+        trends
+          .sort((a, b) => b.upvotes - a.upvotes)
+          .forEach((trend) => {
+            const trendElement = document.createElement("div");
+            trendElement.className = "trend";
+            trendElement.innerHTML = `
+          <img src="${
+            trend.image || "https://via.placeholder.com/400x200"
+          }" alt="${trend.title}">
+          <h3>${trend.title}</h3>
+          <p>${trend.description}</p>
+          <div class="actions">
+            <button onclick="upvoteTrend(${trend.id})">Upvote (${
+              trend.upvotes
+            })</button>
+            <button onclick="commentOnTrend(${trend.id})">Comment</button>
+          </div>
+        `;
+            trendsList.appendChild(trendElement);
+          });
+      }
+
+      async function upvoteTrend(id) {
+        try {
+          const trend = await fetch(`${TRENDS_API_URL}/${id}`).then((res) =>
+            res.json()
+          );
+          const updatedTrend = { ...trend, upvotes: trend.upvotes + 1 };
+
+          const response = await fetch(`${TRENDS_API_URL}/${id}`, {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(updatedTrend),
+          });
+
+          if (!response.ok) {
+            throw new Error("Failed to upvote trend");
+          }
+
+          alert("Upvoted successfully!");
+          renderTrends();
+        } catch (error) {
+          console.error("Error upvoting trend:", error);
+          alert("Failed to upvote trend. Please try again.");
+        }
+      }
+
+      async function commentOnTrend(id) {
+        const comment = prompt("Enter your comment:");
+        if (comment) {
+          try {
+            const trend = await fetch(`${TRENDS_API_URL}/${id}`).then((res) =>
+              res.json()
+            );
+            const updatedTrend = {
+              ...trend,
+              comments: [...trend.comments, comment],
+            };
+
+            const response = await fetch(`${TRENDS_API_URL}/${id}`, {
+              method: "PUT",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(updatedTrend),
+            });
+
+            if (!response.ok) {
+              throw new Error("Failed to add comment");
+            }
+
+            alert("Comment added successfully!");
+            renderTrends();
+          } catch (error) {
+            console.error("Error adding comment:", error);
+            alert("Failed to add comment. Please try again.");
+          }
+        }
+      }
+
+      trendForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const title = document.getElementById("trend-title").value;
+        const description = document.getElementById("trend-description").value;
+        const image =
+          document.getElementById("trend-image").value ||
+          "https://via.placeholder.com/400x200";
+
+        if (title && description) {
+          const newTrend = {
+            title,
+            description,
+            upvotes: 0,
+            comments: [],
+            image,
+          };
+
+          try {
+            const response = await fetch(TRENDS_API_URL, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(newTrend),
+            });
+
+            if (!response.ok) {
+              throw new Error("Failed to submit trend");
+            }
+
+            alert("Trend submitted successfully!");
+            trendForm.reset();
+            trendsSection.classList.add("active");
+            submitTrendSection.classList.remove("active");
+            renderTrends();
+          } catch (error) {
+            console.error("Error submitting trend:", error);
+            alert("Failed to submit trend. Please try again.");
+          }
+        }
+      });
+
+      searchInput.addEventListener("input", async () => {
+        const searchTerm = searchInput.value.toLowerCase();
+        const trends = await fetchTrends();
+        const filteredTrends = trends.filter(
+          (trend) =>
+            trend.title.toLowerCase().includes(searchTerm) ||
+            trend.description.toLowerCase().includes(searchTerm)
+        );
+        renderTrends(filteredTrends);
+      });
+
+      logoutButton.addEventListener("click", () => {
+        alert("You have been logged out.");
+        window.location.href = "./login.html";
+      });
+
+      submitTrendButton.addEventListener("click", () => {
+        trendsSection.classList.remove("active");
+        submitTrendSection.classList.add("active");
+      });
+
+      renderTrends();
+    </script>
+  </body>
+</html>
