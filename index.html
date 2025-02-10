@@ -130,7 +130,7 @@
     </div>
 
     <script type="module">
-      // Firebase Initialization
+      
       import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
       import {
         getAuth,
@@ -151,7 +151,7 @@
       const app = initializeApp(firebaseConfig);
       const auth = getAuth(app);
 
-      // Sign Up Form Submission
+     
       document
         .getElementById("signup-form")
         .addEventListener("submit", function (event) {
@@ -175,7 +175,7 @@
             });
         });
 
-      // Login as Guest
+    
       window.loginAsGuest = function () {
         signInAnonymously(auth)
           .then(() => {
@@ -188,7 +188,7 @@
           });
       };
 
-      // Background Image Slider
+      
       const images = document.querySelectorAll(".background-container img");
       let currentIndex = 0;
 
