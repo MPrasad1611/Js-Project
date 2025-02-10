@@ -180,11 +180,11 @@
         signInAnonymously(auth)
           .then(() => {
             alert("Logged in as Guest. Redirecting...");
-            window.location.href = "./home.html"; // Redirect to home page
+            window.location.href = "./home.html"; 
           })
           .catch((error) => {
             alert("Guest login failed. Please try again.");
-            console.error(error); // Log the error for debugging
+            console.error(error); 
           });
       };
 
