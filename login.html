@@ -111,13 +111,13 @@
         background: #c23321;
       }
 
-      /* Password Toggle Styles */
+      
       .password-container {
         position: relative;
       }
 
       .password-container input {
-        padding-right: 40px; /* Space for the eye icon */
+        padding-right: 40px; 
       }
 
       .password-container .toggle-password {
@@ -129,7 +129,7 @@
         color: #777;
       }
     </style>
-    <!-- Font Awesome for the eye icon -->
+    
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
@@ -175,11 +175,11 @@
         measurementId: "G-CJZQ2S0NK4",
       };
 
-      // Initialize Firebase
+     
       const app = initializeApp(firebaseConfig);
       const auth = getAuth(app);
 
-      // Login with email and password
+      
       document.getElementById("loginForm").addEventListener("submit", (event) => {
         event.preventDefault();
 
@@ -196,7 +196,7 @@
           });
       });
 
-      // Login with Google
+   
       const googleProvider = new GoogleAuthProvider();
       document.getElementById("googleSignIn").addEventListener("click", () => {
         signInWithPopup(auth, googleProvider)
@@ -209,17 +209,17 @@
           });
       });
 
-      // Show/Hide Password Functionality
+      
       const togglePassword = document.querySelector("#togglePassword");
       const passwordInput = document.querySelector("#password");
 
       togglePassword.addEventListener("click", function () {
-        // Toggle the type attribute
+        
         const type =
           passwordInput.getAttribute("type") === "password" ? "text" : "password";
         passwordInput.setAttribute("type", type);
 
-        // Toggle the eye icon
+      
         this.classList.toggle("fa-eye");
         this.classList.toggle("fa-eye-slash");
       });

@@ -105,13 +105,13 @@
         text-decoration: underline;
       }
 
-      /* Password Toggle Styles */
+    
       .password-container {
         position: relative;
       }
 
       .password-container input {
-        padding-right: 40px; /* Space for the eye icon */
+        padding-right: 40px; 
       }
 
       .password-container .toggle-password {
@@ -123,7 +123,7 @@
         color: #777;
       }
     </style>
-    <!-- Font Awesome for the eye icon -->
+   
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
@@ -175,7 +175,7 @@
       const app = initializeApp(firebaseConfig);
       const auth = getAuth(app);
 
-      // Signup form submission
+     
       document
         .getElementById("signup-form")
         .addEventListener("submit", function (event) {
@@ -195,24 +195,24 @@
               window.location.href = "./login.html"; // Redirect to login page
             })
             .catch((error) => {
-              alert(error.message); // Show error message
+              alert(error.message); 
             });
         });
 
-      // Guest login functionality
+      
       window.loginAsGuest = function () {
         signInAnonymously(auth)
           .then(() => {
             alert("Logged in as Guest. Redirecting...");
-            window.location.href = "./home.html"; // Redirect to home page
+            window.location.href = "./home.html"; 
           })
           .catch((error) => {
             alert("Guest login failed. Please try again.");
-            console.error(error); // Log error to console
+            console.error(error);
           });
       };
 
-      // Background image slider
+      
       const images = document.querySelectorAll(".background-container img");
       let currentIndex = 0;
 
@@ -223,17 +223,17 @@
       }
       setInterval(changeBackground, 5000);
 
-      // Show/Hide Password Functionality
+      
       const togglePassword = document.querySelector("#togglePassword");
       const passwordInput = document.querySelector("#password");
 
       togglePassword.addEventListener("click", function () {
-        // Toggle the type attribute
+       
         const type =
           passwordInput.getAttribute("type") === "password" ? "text" : "password";
         passwordInput.setAttribute("type", type);
 
-        // Toggle the eye icon
+       
         this.classList.toggle("fa-eye");
         this.classList.toggle("fa-eye-slash");
       });
