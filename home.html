@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>TrendTrove - Trends Dashboard</title>
-    <link rel="shortcut icon" href="./images/imgfavi.png" type="image/x-icon">
+    <link rel="shortcut icon" href="./images/imgfavi.png" type="image/x-icon" />
     <style>
       body {
         font-family: Arial, sans-serif;
@@ -104,6 +104,7 @@
         border-radius: 10px;
         box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
         transition: transform 0.3s ease, box-shadow 0.3s ease;
+        cursor: pointer;
       }
 
       .trend:hover {
@@ -114,7 +115,7 @@
       .trend img {
         width: 100%;
         height: 200px;
-        object-fit: cover;
+        object-fit: contain; /* Adjusted to show the full image */
         border-radius: 10px;
       }
 
@@ -201,6 +202,98 @@
 
       .hidden {
         display: none;
+      }
+
+      /* Popup Styles */
+      .popup {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.3s ease, visibility 0.3s ease;
+      }
+
+      .popup.active {
+        opacity: 1;
+        visibility: visible;
+      }
+
+      .popup-content {
+        background: #fff;
+        padding: 20px;
+        border-radius: 10px;
+        max-width: 600px;
+        width: 100%;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+        position: relative;
+      }
+
+      .popup-content img {
+        width: 100%;
+        height: auto;
+        max-height: 300px;
+        object-fit: contain;
+        border-radius: 10px;
+      }
+
+      .popup-content h3 {
+        margin: 10px 0;
+        font-size: 1.8em;
+        color: #333;
+      }
+
+      .popup-content p {
+        margin: 0 0 10px;
+        color: #666;
+      }
+
+      .popup-content .comments {
+        margin-top: 10px;
+      }
+
+      .popup-content .comments h4 {
+        margin: 0 0 10px;
+        font-size: 1.2em;
+        color: #444;
+      }
+
+      .popup-content .comments ul {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+      }
+
+      .popup-content .comments ul li {
+        background-color: #e9ecef;
+        padding: 5px 10px;
+        margin-bottom: 5px;
+        border-radius: 3px;
+        color: #333;
+      }
+
+      .popup-content .close-btn {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: #dc3545;
+        color: #fff;
+        border: none;
+        padding: 5px 10px;
+        cursor: pointer;
+        border-radius: 3px;
+        font-size: 1em;
+      }
+
+      .popup-content .close-btn:hover {
+        background: #c82333;
       }
 
       /* Responsive Styles */
@@ -307,6 +400,20 @@
       </main>
     </div>
 
+    <!-- Popup for Trend Details -->
+    <div class="popup" id="trend-popup">
+      <div class="popup-content">
+        <button class="close-btn" id="close-popup">&times;</button>
+        <img id="popup-image" src="" alt="Trend Image" />
+        <h3 id="popup-title"></h3>
+        <p id="popup-description"></p>
+        <div class="comments">
+          <h4>Comments:</h4>
+          <ul id="popup-comments"></ul>
+        </div>
+      </div>
+    </div>
+
     <script>
       const TRENDS_API_URL =
         "https://679f552e24322f8329c360ab.mockapi.io/trends";
@@ -320,6 +427,14 @@
       const submitTrendButton = document.getElementById("submit-trend");
       const logoutButton = document.getElementById("logout-button");
       const searchInput = document.getElementById("search-input");
+
+      // Popup Elements
+      const trendPopup = document.getElementById("trend-popup");
+      const popupImage = document.getElementById("popup-image");
+      const popupTitle = document.getElementById("popup-title");
+      const popupDescription = document.getElementById("popup-description");
+      const popupComments = document.getElementById("popup-comments");
+      const closePopupButton = document.getElementById("close-popup");
 
       async function fetchTrends() {
         try {
@@ -344,29 +459,44 @@
             const trendElement = document.createElement("div");
             trendElement.className = "trend";
             trendElement.innerHTML = `
-          <img src="${
-            trend.image || "https://via.placeholder.com/400x200"
-          }" alt="${trend.title}">
-          <h3>${trend.title}</h3>
-          <p>${trend.description}</p>
-          <div class="comments">
-            <h4>Comments:</h4>
-            <ul>
-              ${trend.comments
-                .map((comment) => `<li>${comment}</li>`)
-                .join("")}
-            </ul>
-          </div>
-          <div class="actions">
-            <button onclick="upvoteTrend(${trend.id})">Upvote (${
+              <img src="${
+                trend.image || "https://via.placeholder.com/400x200"
+              }" alt="${trend.title}">
+              <h3>${trend.title}</h3>
+              <p>${trend.description}</p>
+              <div class="comments">
+                <h4>Comments:</h4>
+                <ul>
+                  ${trend.comments
+                    .map((comment) => `<li>${comment}</li>`)
+                    .join("")}
+                </ul>
+              </div>
+              <div class="actions">
+                <button onclick="upvoteTrend(${trend.id})">Upvote (${
               trend.upvotes
             })</button>
-            <button onclick="commentOnTrend(${trend.id})">Comment</button>
-          </div>
-        `;
+                <button onclick="commentOnTrend(${trend.id})">Comment</button>
+              </div>
+            `;
+            trendElement.addEventListener("click", () => showTrendPopup(trend));
             trendsList.appendChild(trendElement);
           });
       }
+
+      function showTrendPopup(trend) {
+        popupImage.src = trend.image || "https://via.placeholder.com/400x200";
+        popupTitle.textContent = trend.title;
+        popupDescription.textContent = trend.description;
+        popupComments.innerHTML = trend.comments
+          .map((comment) => `<li>${comment}</li>`)
+          .join("");
+        trendPopup.classList.add("active");
+      }
+
+      closePopupButton.addEventListener("click", () => {
+        trendPopup.classList.remove("active");
+      });
 
       async function upvoteTrend(id) {
         try {
