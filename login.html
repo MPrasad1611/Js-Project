@@ -110,10 +110,32 @@
       .google-btn:hover {
         background: #c23321;
       }
+
+      /* Password Toggle Styles */
+      .password-container {
+        position: relative;
+      }
+
+      .password-container input {
+        padding-right: 40px; /* Space for the eye icon */
+      }
+
+      .password-container .toggle-password {
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        cursor: pointer;
+        color: #777;
+      }
     </style>
+    <!-- Font Awesome for the eye icon -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
   </head>
   <body>
-    
     <div class="bg-animation"></div>
 
     <div class="container">
@@ -121,7 +143,10 @@
       <h1 style="color: #444">Please Login To Your Account</h1>
       <form id="loginForm">
         <input type="email" id="email" placeholder="Email" required />
-        <input type="password" id="password" placeholder="Password" required />
+        <div class="password-container">
+          <input type="password" id="password" placeholder="Password" required />
+          <i class="fas fa-eye toggle-password" id="togglePassword"></i>
+        </div>
         <button type="submit" id="btn">Login</button>
       </form>
       <button class="google-btn" id="googleSignIn">Sign in with Google</button>
@@ -150,11 +175,11 @@
         measurementId: "G-CJZQ2S0NK4",
       };
 
-     
+      // Initialize Firebase
       const app = initializeApp(firebaseConfig);
       const auth = getAuth(app);
 
-     
+      // Login with email and password
       document.getElementById("loginForm").addEventListener("submit", (event) => {
         event.preventDefault();
 
@@ -171,7 +196,7 @@
           });
       });
 
-     
+      // Login with Google
       const googleProvider = new GoogleAuthProvider();
       document.getElementById("googleSignIn").addEventListener("click", () => {
         signInWithPopup(auth, googleProvider)
@@ -182,6 +207,21 @@
           .catch((error) => {
             alert(error.message);
           });
+      });
+
+      // Show/Hide Password Functionality
+      const togglePassword = document.querySelector("#togglePassword");
+      const passwordInput = document.querySelector("#password");
+
+      togglePassword.addEventListener("click", function () {
+        // Toggle the type attribute
+        const type =
+          passwordInput.getAttribute("type") === "password" ? "text" : "password";
+        passwordInput.setAttribute("type", type);
+
+        // Toggle the eye icon
+        this.classList.toggle("fa-eye");
+        this.classList.toggle("fa-eye-slash");
       });
     </script>
   </body>
