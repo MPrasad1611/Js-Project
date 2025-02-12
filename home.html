@@ -6,6 +6,7 @@
     <title>TrendTrove - Trends Dashboard</title>
     <link rel="shortcut icon" href="./images/imgfavi.png" type="image/x-icon" />
     <style>
+     
       body {
         font-family: Arial, sans-serif;
         background-color: #f4f4f9;
@@ -426,7 +427,7 @@
       </main>
     </div>
 
-    
+
     <div class="popup" id="trend-popup">
       <div class="popup-content">
         <button class="close-btn" id="close-popup">&times;</button>
@@ -454,7 +455,6 @@
       const logoutButton = document.getElementById("logout-button");
       const searchInput = document.getElementById("search-input");
 
-      
       const trendPopup = document.getElementById("trend-popup");
       const popupImage = document.getElementById("popup-image");
       const popupTitle = document.getElementById("popup-title");
@@ -503,6 +503,11 @@
               trend.upvotes
             })</button>
                 <button onclick="commentOnTrend(${trend.id})">Comment</button>
+                ${
+                  trend.userAdded
+                    ? `<button onclick="deleteTrend(${trend.id})">Delete</button>`
+                    : ""
+                }
               </div>
             `;
             trendElement.addEventListener("click", (e) => {
@@ -588,6 +593,27 @@
         }
       }
 
+      async function deleteTrend(id) {
+        const confirmDelete = confirm("Are you sure you want to delete this trend?");
+        if (confirmDelete) {
+          try {
+            const response = await fetch(`${TRENDS_API_URL}/${id}`, {
+              method: "DELETE",
+            });
+
+            if (!response.ok) {
+              throw new Error("Failed to delete trend");
+            }
+
+            alert("Trend deleted successfully!");
+            renderTrends();
+          } catch (error) {
+            console.error("Error deleting trend:", error);
+            alert("Failed to delete trend. Please try again.");
+          }
+        }
+      }
+
       trendForm.addEventListener("submit", async (e) => {
         e.preventDefault();
         const title = document.getElementById("trend-title").value;
@@ -603,6 +629,7 @@
             upvotes: 0,
             comments: [],
             image,
+            userAdded: true, 
           };
 
           try {
